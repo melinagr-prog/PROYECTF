@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Túnel</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        #carrito {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .card button {
+            margin-top: 8px;
+            padding: 5px 10px;
+            border: none;
+            background: black;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .card button:hover {
+            background: #333;
+        }
+
+        #lista-carrito {
+            display: none;
+        }
+
+        #checkout {
+            display: none;
+            padding: 20px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="top-bar">
+        <h1>El Túnel</h1>
+        <div class="icons">
+            <img src="magnifying-glass-solid.svg.png" alt="Buscar">
+            <img src="user-regular.svg.png" alt="Usuario">
+            <img src="heart-regular.svg.png" alt="Favoritos">
+            <img src="cart-shopping-solid.svg.png" alt="Carrito">
+        </div>
+    </div>
+    <nav>
+        <a href="#inicio">Inicio</a>
+        <a href="#libros">Libros</a>
+        <a href="#recomendaciones">Los más leídos</a>
+        <a href="#accesorios">Accesorios</a>
+        <a href="#sucursal">Sucursal</a>
+    </nav>
+</header>
+
+<!-- 🛒 Carrito -->
+<div id="carrito">
+    🛒 <span id="contador">0</span>
+    <div id="lista-carrito">
+        <ul id="items"></ul>
+        <p><strong>Total: $<span id="total">0</span></strong></p>
+        <button onclick="irAPago()">Pagar</button>
+    </div>
+</div>
+
+<section id="inicio" class="banner">
+    <img src="portada.jpg" alt="Banner El Túnel">
+    <h2>Creando nuevos mundos, historias y recuerdos</h2>
+</section>
+
+<section id="recomendaciones" class="recomendaciones">
+    <h2>Recomendaciones mensuales</h2>
+    <div class="grid">
+        <div class="card">
+            <img src="harrypotter.jpg">
+            <p>Harry Potter y la piedra filosofal</p>
+        </div>
+        <div class="card">
+            <img src="curioso_incidente.jpg">
+            <p>El curioso incidente del perro a medianoche</p>
+        </div>
+        <div class="card">
+            <img src="laura_corazon.jpg">
+            <p>Laura y el corazón de las cosas</p>
+        </div>
+    </div>
+</section>
+
+<section id="libros" class="libros">
+    <h2>Libros</h2>
+    <div class="grid">
+
+        <div class="card">
+            <img src="sombra_viento.jpg">
+            <p>La sombra del viento</p>
+            <p>$145.00</p>
+            <button onclick="agregar('La sombra del viento',145)">Agregar al carrito</button>
+        </div>
+
+        <div class="card">
+            <img src="rayuela.jpg">
+            <p>Rayuela</p>
+            <p>$145.00</p>
+            <button onclick="agregar('Rayuela',145)">Agregar al carrito</button>
+        </div>
+
+        <div class="card">
+            <img src="arboles_cantan.jpg">
+            <p>Donde los árboles cantan</p>
+            <p>$150.00</p>
+            <button onclick="agregar('Donde los árboles cantan',150)">Agregar al carrito</button>
+        </div>
+
+        <div class="card">
+            <img src="nombre_viento.jpg">
+            <p>El nombre del viento</p>
+            <p>$350.00</p>
+            <button onclick="agregar('El nombre del viento',350)">Agregar al carrito</button>
+        </div>
+
+    </div>
+</section>
+
+<section id="accesorios" class="accesorios">
+    <h2>Accesorios</h2>
+    <div class="grid">
+        <div class="card">
+            <img src="tazaliteraria.jpg">
+            <p>Taza literaria</p>
+        </div>
+    </div>
+</section>
+
+<section id="sucursal" class="conocenos">
+    <div class="texto">
+        <h2>Conócenos</h2>
+        <p>
+            El Túnel es un café literario ideal para los amantes de la lectura. 
+            Disfruta de un ambiente único rodeado de libros.
+        </p>
+    </div>
+    <div class="imagen">
+        <img src="cafeteria.jpg">
+    </div>
+</section>
+
+<!-- 🧾 Checkout -->
+<section id="checkout">
+    <h2>Resumen de compra</h2>
+    <ul id="checkout-items"></ul>
+    <p><strong>Total a pagar: $<span id="checkout-total">0</span></strong></p>
+    <button onclick="finalizarCompra()">Confirmar compra</button>
+</section>
+
+<footer>
+    <p>© 2026 El Túnel</p>
+    <p>Creadora - Melina González Reyes</p>
+</footer>
+
+<script>
+    let contador = 0;
+    let carrito = [];
+    let total = 0;
+
+    function agregar(nombre, precio) {
+        contador++;
+        carrito.push({ nombre, precio });
+        total += precio;
+
+        document.getElementById("contador").innerText = contador;
+        document.getElementById("total").innerText = total;
+
+        mostrarCarrito();
+    }
+
+    function mostrarCarrito() {
+        let lista = document.getElementById("items");
+        let contenedor = document.getElementById("lista-carrito");
+
+        lista.innerHTML = "";
+
+        carrito.forEach(producto => {
+            let li = document.createElement("li");
+            li.textContent = producto.nombre + " - $" + producto.precio;
+            lista.appendChild(li);
+        });
+
+        contenedor.style.display = "block";
+    }
+
+    // Mostrar / ocultar carrito
+    document.getElementById("carrito").onclick = function() {
+        let lista = document.getElementById("lista-carrito");
+        lista.style.display = lista.style.display === "none" ? "block" : "none";
+    }
+
+    function irAPago() {
+        let lista = document.getElementById("checkout-items");
+        let checkout = document.getElementById("checkout");
+
+        lista.innerHTML = "";
+
+        carrito.forEach(producto => {
+            let li = document.createElement("li");
+            li.textContent = producto.nombre + " - $" + producto.precio;
+            lista.appendChild(li);
+        });
+
+        document.getElementById("checkout-total").innerText = total;
+
+        checkout.style.display = "block";
+        checkout.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function finalizarCompra() {
+        alert("✅ Compra realizada con éxito");
+
+        carrito = [];
+        contador = 0;
+        total = 0;
+
+        document.getElementById("contador").innerText = 0;
+        document.getElementById("total").innerText = 0;
+        document.getElementById("checkout-total").innerText = 0;
+        document.getElementById("items").innerHTML = "";
+        document.getElementById("checkout-items").innerHTML = "";
+    }
+</script>
+
+</body>
+</html>
